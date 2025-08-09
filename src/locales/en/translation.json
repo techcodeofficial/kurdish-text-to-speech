@@ -1,0 +1,18 @@
+{
+    "intro": {
+        "welcome": "welcome",
+        "welcomeDesc": "thanks for choise this app",
+        "quick": "very fast",
+        "quickDesc": "convert text to speech fastly",
+        "free": "free",
+        "freeDesc": "free get service",
+        "start": "start",
+        "startDesc": "dont stop start now"
+    },
+    "const": {
+        "nextButton": "next",
+        "prevButton": "prev",
+        "doneButton": "start"
+    },
+    "direction": "ltr"
+}

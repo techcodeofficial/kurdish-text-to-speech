@@ -1,8 +1,39 @@
-import { registerRootComponent } from 'expo';
+import { registerRootComponent } from "expo";
+import { useEffect } from "react";
+import { store } from "./src/store/store";
+import { Provider } from "react-redux";
+import * as Font from "expo-font";
+import * as SplashScreen from "expo-splash-screen";
+import Main from "./Main";
+SplashScreen.preventAutoHideAsync();
+const fetchFonts = () => {
+    return Font.loadAsync({
+        VazirRegular: require("./src/assets/fonts/Vazirmatn-Regular.ttf"),
+        VazirMedium: require("./src/assets/fonts/Vazirmatn-Light.ttf"),
+        VazirLight: require("./src/assets/fonts/Vazirmatn-Light.ttf"),
+        VazirThin: require("./src/assets/fonts/Vazirmatn-Thin.ttf"),
+        VazirBold: require("./src/assets/fonts/Vazirmatn-Bold.ttf"),
+        NizarNQ: require("./src/assets/fonts/Nizar.ttf")
+    });
+};
+const Root = () => {
+    useEffect(() => {
+        const prepare = async () => {
+            try {
+                await fetchFonts();
+            } catch (e) {
+                console.warn(e);
+            } finally {
+                await SplashScreen.hideAsync();
+            }
+        };
+        prepare();
+    }, []);
+    return (
+        <Provider store={store}>
+            <Main />
+        </Provider>
+    );
+};
 
-import App from './App';
-
-// registerRootComponent calls AppRegistry.registerComponent('main', () => App);
-// It also ensures that whether you load the app in Expo Go or in a native build,
-// the environment is set up appropriately
-registerRootComponent(App);
+registerRootComponent(Root);
