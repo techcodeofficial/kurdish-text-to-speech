@@ -39,7 +39,7 @@ const DrawerItem = ({
                     styles.drawerItem,
                     {
                         flexDirection:
-                            direction === "ltr" ? "row" : "row-reverse"
+                            direction === "rtl" ? "row" : "row-reverse"
                     }
                 ]}
             >

@@ -12,7 +12,14 @@
     "const": {
         "nextButton": "next",
         "prevButton": "prev",
-        "doneButton": "start"
+        "doneButton": "start",
+        "loadingText": "place wait",
+        "homeDrawerText": "text to speech",
+        "aboutDrawerText": "about"
+    },
+    "tts": {
+        "convertButton": "convert to speech",
+        "textAreaPlaceholder": "inter your text"
     },
     "direction": "ltr"
 }

@@ -6,22 +6,23 @@ import {
     StyleSheet,
     Dimensions
 } from "react-native";
+import { useTheme } from "react-native-paper";
 import { Image } from "expo-image";
 import { createAudioPlayer, useAudioPlayer } from "expo-audio";
 import Slider from "@react-native-community/slider";
-import audioSource from "../../assets/music.mp3";
 const { width } = Dimensions.get("window");
 import equilizerGif from "../../assets/player/equilizer.gif";
-export default function AudioPlayer() {
+const AudioPlayer = ({ uri }) => {
     const [speed, setSpeed] = useState(1);
     const [isPlaying, setIsPlaying] = useState(false);
     const sliderRef = useRef({ triger: false });
     const animationRef = useRef(null);
-    const player = useAudioPlayer(audioSource);
+    const player = useAudioPlayer({ uri });
     const [current, setCurrent] = useState(0);
     const [duration, setDuration] = useState(0);
+    const { colors } = useTheme();
     player.addListener("playbackStatusUpdate", status => {
-        if (status.didJustFinish) {
+        if (status.didJustFinish || !status.playing) {
             setIsPlaying(false);
             animationRef.current.stopAnimating();
         }
@@ -46,9 +47,11 @@ export default function AudioPlayer() {
             animationRef.current.stopAnimating();
             setIsPlaying(false);
         } else {
-            animationRef.current.startAnimating();
-            await player.play();
-            setIsPlaying(true);
+            if (player.currentStatus.isLoaded) {
+                animationRef.current.startAnimating();
+                await player.play();
+                setIsPlaying(true);
+            }
         }
     };
 
@@ -87,7 +90,14 @@ export default function AudioPlayer() {
         setIsPlaying(true);
     };
     return (
-        <View style={styles.container}>
+        <View
+            style={[
+                styles.container,
+                {
+                    backgroundColor: colors.background
+                }
+            ]}
+        >
             <Image
                 contentFit="cover"
                 autoplay={false}
@@ -149,14 +159,15 @@ export default function AudioPlayer() {
             </View>
         </View>
     );
-}
+};
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: "#111",
         justifyContent: "center",
-        alignItems: "center"
+        alignItems: "center",
+        borderRadius: 10
     },
     progressRow: {
         flexDirection: "row",
@@ -201,3 +212,5 @@ const styles = StyleSheet.create({
     },
     playPauseText: { color: "#111", fontSize: 30, fontWeight: "bold" }
 });
+
+export default AudioPlayer;

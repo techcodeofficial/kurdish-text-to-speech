@@ -12,7 +12,14 @@
     "const": {
         "nextButton": "دواتر",
         "prevButton": "پێشووتر",
-        "doneButton": "دەستپێکە"
+        "doneButton": "دەستپێکە",
+        "loadingText": "چاوەڕێ بە",
+        "homeDrawerText":"نوسراوە بۆ دەنگ",
+        "aboutDrawerText":"سەبارەت بە ئێمە"
+    },
+    "tts": {
+        "convertButton": "گۆڕین بۆ دەنگ",
+        "textAreaPlaceholder": "تکایە لێرە بنووسە"
     },
     "direction": "rtl"
 }

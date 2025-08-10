@@ -15,15 +15,29 @@ import DrawerHeader from "../components/drawer/DrawerHeader";
 import { useSelector } from "react-redux";
 import { themeStatus } from "../reducers/theme/themeSlice";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import drawerItemData from "../configs/drawerItemData";
 import DrawerItem from "../components/drawer/DrawerItem";
 import { getLanguage } from "../reducers/lang/languageSlice";
 import Home from "../screens/home/Home";
+import FontAwesome from "react-native-vector-icons/FontAwesome";
+import {Lucide} from "@react-native-vector-icons/lucide"
+import { useTranslation } from "react-i18next";
 const Drawer = createDrawerNavigator();
 const MainContainer = ({ toggleLanguage }) => {
     let isDarkTheme = useSelector(themeStatus);
     let insets = useSafeAreaInsets();
     let { direction } = useSelector(getLanguage);
+    let {t} = useTranslation()
+    let drawerItemData = [{
+        routeName: "Home",
+        text: t("const.homeDrawerText"),
+        Icon: Lucide,
+        iconName: "speech"
+    },    {
+        routeName: "About",
+        text:  t("const.aboutDrawerText"),
+        Icon: FontAwesome,
+        iconName: "info"
+    }]
     return (
         <NavigationContainer theme={isDarkTheme ? DarkTheme : DefaultTheme}>
             <Drawer.Navigator
@@ -87,7 +101,7 @@ const MainContainer = ({ toggleLanguage }) => {
                         borderStartEndRadius: 0
                     },
                     drawerType: "back", // front push back slide permanent
-                    drawerPosition: direction === "rtl" ? "right" : "left"
+                    drawerPosition: direction === "rtl" ? "left" : "right"
                 }}
                 initialRouteName="Home"
             >

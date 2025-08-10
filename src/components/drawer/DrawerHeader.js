@@ -17,7 +17,7 @@ const DrawerHeader = props => {
                 ...styles.container,
                 backgroundColor: colors.card,
                 paddingTop: top + 5,
-                flexDirection: direction === "rtl" ? "row-reverse" : "row"
+                flexDirection: direction === "rtl" ? "row" : "row-reverse"
             }}
         >
             <View style={[styles.toggle]}>
@@ -33,12 +33,10 @@ const DrawerHeader = props => {
             </View>
             <View style={[styles.toggle]}>
                 <ToggleLang
-                    onPress={
-                        props.toggleLanguage
-                   }
+                    onPress={props.toggleLanguage}
                     styles={{
                         top: -30,
-                        ...(direction === "rtl" ? { left: 0 } : { right: 0 })
+                        ...(direction === "rtl" ? { right: 0 } : { left: 0 })
                     }}
                 />
             </View>
