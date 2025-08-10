@@ -8,15 +8,18 @@ const ToggleLang = props => {
     return (
         <TouchableOpacity
             {...props}
-            style={{
-                position: "absolute",
-                zIndex: 10000,
-                top: insets.top + 15,
-                right: 15,
-                width: 65,
-                height: 65,
-                borderRadius: 100
-            }}
+            style={
+                [{
+                    position: "absolute",
+                    zIndex: 10000,
+                    top: insets.top + 15,
+                    right: 15,
+                    width: 65,
+                    height: 65,
+                    borderRadius: 100
+                },
+                props.styles]
+            }
         >
             <Image
                 source={langGif}

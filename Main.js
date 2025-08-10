@@ -7,13 +7,6 @@ import { themeStatus, setTheme } from "./src/reducers/theme/themeSlice";
 import App from "./App";
 const Main = () => {
     let dispatch = useDispatch();
-    let fonts = {
-        regular: { fontFamily: "VazirRegular" },
-        medium: { fontFamily: "VazirMedium" },
-        light: { fontFamily: "VazirLight" },
-        thin: { fontFamily: "VazirThin" },
-        bold: { fontFamily: "VazirBold" }
-    };
     const scheme = useColorScheme();
     const { theme } = useMaterial3Theme();
     const isDarkTheme = useSelector(themeStatus);
@@ -23,12 +16,12 @@ const Main = () => {
     const paperTheme = isDarkTheme
         ? {
               ...MD3DarkTheme,
-              fonts,
+
               colors: theme.dark
           }
         : {
               ...MD3LightTheme,
-              fonts,
+
               colors: theme.light
           };
     return (

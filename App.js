@@ -70,7 +70,7 @@ const App = () => {
                 <IntroContainer toggleLanguage={toggleLanguage} />
             ) : (
                 <GestureHandlerRootView style={{ flex: 1 }}>
-                    <MainContainer />
+                    <MainContainer toggleLanguage={toggleLanguage}/>
                 </GestureHandlerRootView>
             )}
         </I18nextProvider>
