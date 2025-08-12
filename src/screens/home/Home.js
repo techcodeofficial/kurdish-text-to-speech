@@ -8,16 +8,27 @@ import loadingGif from "../../assets/player/loading.gif";
 import { Image } from "expo-image";
 import { useTranslation } from "react-i18next";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import useStyleDirection from "../../hooks/useStyleDirection";
+import Toast from "react-native-toast-message";
+
 const Home = () => {
     let { t } = useTranslation();
     const { colors } = useTheme();
     const { bottom } = useSafeAreaInsets();
     let [text, setText] = useState();
     let [url, setUrl] = useState();
+    let isRTL = useStyleDirection();
     let [loading, setLoading] = useState(false);
     const toSpeechHandler = async () => {
         if (!text) {
-            //show toast
+            Toast.show({
+                type: "custom_toast",
+                text1: t("errors.title"),
+                text2: t("errors.textError"),
+                props: { isRTL },
+                position: "top",
+                visibilityTime: 3000
+            });
             return;
         }
         setUrl(false);
@@ -44,9 +55,17 @@ const Home = () => {
             setUrl(response.data);
         } catch (e) {
             setLoading(false);
-            //show toast
+            Toast.show({
+                type: "custom_toast",
+                text1: t("errors.title"),
+                text2: t("errors.networkError"),
+                props: { isRTL },
+                position: "top",
+                visibilityTime: 3000
+            });
         }
     };
+
     return (
         <View style={[styles.container, { paddingBottom: bottom }]}>
             <View style={styles.inputContainer}>
@@ -65,6 +84,7 @@ const Home = () => {
                     </Text>
                 </TouchableOpacity>
             </View>
+
             {url && <Equalizer uri={url} />}
             {loading && (
                 <View

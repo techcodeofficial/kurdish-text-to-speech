@@ -1,10 +1,9 @@
 import { useTheme as useNavigationTheme } from "@react-navigation/native";
 import styles from "./styles/DrawerItem.style";
 import MCIcon from "react-native-vector-icons/MaterialCommunityIcons";
-import { View, Pressable, Text } from "react-native";
+import { View, Pressable, Text, I18nManager } from "react-native";
 import { getLanguage } from "../../reducers/lang/languageSlice";
-import { useSelector } from "react-redux";
-
+import useStyleDirection from "../../hooks/useStyleDirection";
 const DrawerItem = ({
     index,
     navigation,
@@ -14,8 +13,8 @@ const DrawerItem = ({
     state,
     routeName
 }) => {
-    let { direction } = useSelector(getLanguage);
     let { colors: navigationColors } = useNavigationTheme();
+    let isRTL = useStyleDirection();
     return (
         <View
             style={[
@@ -38,8 +37,7 @@ const DrawerItem = ({
                 style={[
                     styles.drawerItem,
                     {
-                        flexDirection:
-                            direction === "rtl" ? "row" : "row-reverse"
+                        flexDirection: isRTL ? "row-reverse" : "row"
                     }
                 ]}
             >

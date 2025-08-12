@@ -7,17 +7,18 @@ import { useTheme } from "@react-navigation/native";
 import styles from "./styles/DrawerHeader.style";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { getLanguage } from "../../reducers/lang/languageSlice";
+import useStyleDirection from "../../hooks/useStyleDirection";
 const DrawerHeader = props => {
     let { colors } = useTheme();
+    let isRTL = useStyleDirection();
     let { top } = useSafeAreaInsets();
-    let { direction } = useSelector(getLanguage);
     return (
         <View
             style={{
                 ...styles.container,
                 backgroundColor: colors.card,
                 paddingTop: top + 5,
-                flexDirection: direction === "rtl" ? "row" : "row-reverse"
+                flexDirection: isRTL ? "row-reverse" : "row"
             }}
         >
             <View style={[styles.toggle]}>
@@ -35,8 +36,16 @@ const DrawerHeader = props => {
                 <ToggleLang
                     onPress={props.toggleLanguage}
                     styles={{
-                        top: -30,
-                        ...(direction === "rtl" ? { right: 0 } : { left: 0 })
+                        position: "relative",
+                        left: 0,
+                        right: 0,
+                        top: 0,
+                        width: 50,
+                        height: 50
+                    }}
+                    imageStyle={{
+                        width: "120%",
+                        height: "120%"
                     }}
                 />
             </View>

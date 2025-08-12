@@ -1,6 +1,6 @@
 import { Pressable } from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
-import {useTheme} from "react-native-paper"
+import { useTheme } from "react-native-paper";
 const DrawerCloseButton = ({ closeDrawer }) => {
     let { colors } = useTheme();
     return (
@@ -10,6 +10,7 @@ const DrawerCloseButton = ({ closeDrawer }) => {
                 paddingHorizontal: 13,
                 paddingVertical: 10,
                 borderRadius: 50,
+
             }}
         >
             <FontAwesome

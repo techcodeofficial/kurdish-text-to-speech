@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+import { View } from "react-native";
 import Equalizer from "../components/utils/Equalizer";
 import {
     NavigationContainer,
@@ -18,26 +18,31 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import DrawerItem from "../components/drawer/DrawerItem";
 import { getLanguage } from "../reducers/lang/languageSlice";
 import Home from "../screens/home/Home";
+import About from "../screens/about/About";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
-import {Lucide} from "@react-native-vector-icons/lucide"
+import { Lucide } from "@react-native-vector-icons/lucide";
 import { useTranslation } from "react-i18next";
+import useStyleDirection from "../hooks/useStyleDirection";
 const Drawer = createDrawerNavigator();
 const MainContainer = ({ toggleLanguage }) => {
     let isDarkTheme = useSelector(themeStatus);
     let insets = useSafeAreaInsets();
-    let { direction } = useSelector(getLanguage);
-    let {t} = useTranslation()
-    let drawerItemData = [{
-        routeName: "Home",
-        text: t("const.homeDrawerText"),
-        Icon: Lucide,
-        iconName: "speech"
-    },    {
-        routeName: "About",
-        text:  t("const.aboutDrawerText"),
-        Icon: FontAwesome,
-        iconName: "info"
-    }]
+    let { t } = useTranslation();
+    let isRTL = useStyleDirection();
+    let drawerItemData = [
+        {
+            routeName: "Home",
+            text: t("const.homeDrawerText"),
+            Icon: Lucide,
+            iconName: "speech"
+        },
+        {
+            routeName: "About",
+            text: t("const.aboutDrawerText"),
+            Icon: FontAwesome,
+            iconName: "info"
+        }
+    ];
     return (
         <NavigationContainer theme={isDarkTheme ? DarkTheme : DefaultTheme}>
             <Drawer.Navigator
@@ -46,25 +51,24 @@ const MainContainer = ({ toggleLanguage }) => {
                         <DrawerContentScrollView {...props}>
                             <View
                                 style={{
-                                    flexDirection:
-                                        direction === "rtl"
-                                            ? "row"
-                                            : "row-reverse",
+                                    flexDirection: isRTL
+                                        ? "row-reverse"
+                                        : "row",
                                     alignItems: "center",
                                     justifyContent: "space-between"
                                 }}
                             >
-                                <DrawerCloseButton
-                                    closeDrawer={props.navigation.closeDrawer}
-                                />
                                 <ToggleLang
                                     onPress={toggleLanguage}
                                     styles={{
-                                        top: -10,
-                                        ...(direction === "rtl"
-                                            ? { right: 0 }
-                                            : { left: 0 })
+                                        position: "relative",
+                                        top: 0,
+                                        left: 0,
+                                        right: 0
                                     }}
+                                />
+                                <DrawerCloseButton
+                                    closeDrawer={props.navigation.closeDrawer}
                                 />
                             </View>
                             <View
@@ -101,15 +105,12 @@ const MainContainer = ({ toggleLanguage }) => {
                         borderStartEndRadius: 0
                     },
                     drawerType: "back", // front push back slide permanent
-                    drawerPosition: direction === "rtl" ? "left" : "right"
+                    drawerPosition: isRTL ? "right" : "left"
                 }}
                 initialRouteName="Home"
             >
                 <Drawer.Screen name="Home" component={Home} />
-                <Drawer.Screen
-                    name="About"
-                    component={() => <Text>hello</Text>}
-                />
+                <Drawer.Screen name="About" component={About} />
             </Drawer.Navigator>
         </NavigationContainer>
     );

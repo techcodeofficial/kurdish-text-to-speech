@@ -5,6 +5,10 @@ import { Provider } from "react-redux";
 import * as Font from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import Main from "./Main";
+import { I18nManager } from "react-native";
+
+I18nManager.allowRTL(false);
+I18nManager.forceRTL(false);
 SplashScreen.preventAutoHideAsync();
 const fetchFonts = () => {
     return Font.loadAsync({

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
     View,
     TouchableOpacity,
@@ -8,10 +8,16 @@ import {
 } from "react-native";
 import { useTheme } from "react-native-paper";
 import { Image } from "expo-image";
-import { createAudioPlayer, useAudioPlayer } from "expo-audio";
+import { useAudioPlayer } from "expo-audio";
 import Slider from "@react-native-community/slider";
+import Icon from "react-native-vector-icons/FontAwesome";
+import useStyleDirection from "../../hooks/useStyleDirection";
 const { width } = Dimensions.get("window");
+import * as Sharing from "expo-sharing";
+import * as FileSystem from "expo-file-system";
 import equilizerGif from "../../assets/player/equilizer.gif";
+import Toast from "react-native-toast-message"
+import { useTranslation } from "react-i18next";
 const AudioPlayer = ({ uri }) => {
     const [speed, setSpeed] = useState(1);
     const [isPlaying, setIsPlaying] = useState(false);
@@ -21,8 +27,10 @@ const AudioPlayer = ({ uri }) => {
     const [current, setCurrent] = useState(0);
     const [duration, setDuration] = useState(0);
     const { colors } = useTheme();
+    let { t } = useTranslation();
+    const isRTL = useStyleDirection();
     player.addListener("playbackStatusUpdate", status => {
-        if (status.didJustFinish || !status.playing) {
+        if (status.didJustFinish) {
             setIsPlaying(false);
             animationRef.current.stopAnimating();
         }
@@ -49,6 +57,9 @@ const AudioPlayer = ({ uri }) => {
         } else {
             if (player.currentStatus.isLoaded) {
                 animationRef.current.startAnimating();
+                if (current >= duration) {
+                    player.seekTo(0);
+                }
                 await player.play();
                 setIsPlaying(true);
             }
@@ -84,11 +95,46 @@ const AudioPlayer = ({ uri }) => {
 
     const onSlidingComplete = async value => {
         sliderRef.triger = false;
-        player.seekTo(value / 1000);
-        player.play();
-        animationRef.current.startAnimating();
-        setIsPlaying(true);
+        if (player.currentStatus.isLoaded) {
+            player.seekTo(value / 1000);
+            player.play();
+            animationRef.current.startAnimating();
+            setIsPlaying(true);
+        }
     };
+
+    const downloadAndShare = async () => {
+        try {
+            if (!(await Sharing.isAvailableAsync())) {
+                Toast.show({
+                    type: "custom_toast",
+                    text1: t("errors.title"),
+                    text2: t("errors.shareError"),
+                    props: { isRTL },
+                    position: "top",
+                    visibilityTime: 3000
+                });
+            }
+            const fileUri = FileSystem.cacheDirectory + "music.mp3";
+
+            const { uri: fileUriSystem } = await FileSystem.downloadAsync(
+                uri,
+                fileUri
+            );
+            await Sharing.shareAsync(fileUriSystem);
+            await FileSystem.deleteAsync(fileUriSystem, { idempotent: true });
+        } catch (error) {
+            Toast.show({
+                    type: "custom_toast",
+                    text1: t("errors.title"),
+                    text2: t("errors.shareError"),
+                    props: { isRTL },
+                    position: "top",
+                    visibilityTime: 3000
+                });
+        }
+    };
+
     return (
         <View
             style={[
@@ -108,10 +154,15 @@ const AudioPlayer = ({ uri }) => {
                     height: 100
                 }}
             />
-            <View style={styles.progressRow}>
+            <View
+                style={[
+                    styles.progressRow,
+                    { flexDirection: isRTL ? "row-reverse" : "row" }
+                ]}
+            >
                 <Text style={styles.timeText}>{formatTime(current)}</Text>
                 <Slider
-                    style={styles.progressSlider}
+                    style={[styles.progressSlider, isRTL && styles.rtlSlider]}
                     minimumValue={0}
                     maximumValue={duration}
                     value={current}
@@ -125,7 +176,12 @@ const AudioPlayer = ({ uri }) => {
                 <Text style={styles.timeText}>{formatTime(duration)}</Text>
             </View>
 
-            <View style={styles.controls}>
+            <View
+                style={[
+                    styles.controls,
+                    { flexDirection: isRTL ? "row-reverse" : "row" }
+                ]}
+            >
                 {[0.5, 1, 2].map(s => (
                     <TouchableOpacity
                         key={s}
@@ -139,7 +195,7 @@ const AudioPlayer = ({ uri }) => {
                             style={[
                                 styles.btnText,
                                 speed === s
-                                    ? styles.activeBtnText
+                                    ? { color: colors.onBackground }
                                     : styles.inactiveBtnText
                             ]}
                         >
@@ -152,11 +208,32 @@ const AudioPlayer = ({ uri }) => {
                     style={styles.playPauseBtn}
                     onPress={togglePlayPause}
                 >
-                    <Text style={styles.playPauseText}>
-                        {isPlaying ? "⏸" : "▶"}
+                    <Text style={{ color: colors.onBackground }}>
+                        {isPlaying ? (
+                            <Icon name="pause" size={30} />
+                        ) : (
+                            <Icon name="play" size={30} />
+                        )}
                     </Text>
                 </TouchableOpacity>
             </View>
+            <TouchableOpacity
+                style={[
+                    styles.btn,
+                    styles.activeBtn,
+                    {
+                        position: "absolute",
+                        bottom: 20
+                    }
+                ]}
+                onPress={downloadAndShare}
+            >
+                <Icon
+                    style={{ color: colors.onBackground }}
+                    name="share"
+                    size={30}
+                />
+            </TouchableOpacity>
         </View>
     );
 };
@@ -167,12 +244,16 @@ const styles = StyleSheet.create({
         backgroundColor: "#111",
         justifyContent: "center",
         alignItems: "center",
-        borderRadius: 10
+        borderRadius: 10,
+        position: "relative"
     },
     progressRow: {
         flexDirection: "row",
         alignItems: "center",
         width: width * 0.85
+    },
+    rtlSlider: {
+        transform: [{ rotate: "180deg" }]
     },
     timeText: {
         color: "#4cafef",
@@ -198,7 +279,6 @@ const styles = StyleSheet.create({
     activeBtn: { backgroundColor: "#4cafef" },
     inactiveBtn: { backgroundColor: "transparent" },
     btnText: { fontWeight: "bold", fontSize: 16, textAlign: "center" },
-    activeBtnText: { color: "#111" },
     inactiveBtnText: { color: "#4cafef" },
     playPauseBtn: {
         width: 60,

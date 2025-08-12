@@ -21,5 +21,11 @@
         "convertButton": "گۆڕین بۆ دەنگ",
         "textAreaPlaceholder": "تکایە لێرە بنووسە"
     },
+    "errors": {
+      "title":"کێشەیەک هەیە",
+        "shareError": "گێشەیەک لە ناردن رووی دا",
+        "textError": "تکایه شتێک بنووسە",
+        "networkError":"کێشەیەک ڕووی دا تکایە دواتر هەول بدەن"
+    },
     "direction": "rtl"
 }

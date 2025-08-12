@@ -21,5 +21,11 @@
         "convertButton": "convert to speech",
         "textAreaPlaceholder": "inter your text"
     },
+    "errors": {
+      "title":"error",
+        "shareError": "share file error",
+        "textError": "please write a text",
+        "networkError":"error place try again later"
+    },
     "direction": "ltr"
 }

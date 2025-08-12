@@ -4,6 +4,8 @@ import { useColorScheme } from "react-native";
 import { MD3DarkTheme, MD3LightTheme, PaperProvider } from "react-native-paper";
 import { useSelector, useDispatch } from "react-redux";
 import { themeStatus, setTheme } from "./src/reducers/theme/themeSlice";
+import Toast from "react-native-toast-message"
+import CustomToast from "./src/components/utils/Toast"
 import App from "./App";
 const Main = () => {
     let dispatch = useDispatch();
@@ -27,6 +29,17 @@ const Main = () => {
     return (
         <PaperProvider theme={paperTheme}>
             <App />
+            <Toast
+                config={{
+                    custom_toast: ({ text1, text2, props }) => (
+                        <CustomToast
+                            text1={text1}
+                            text2={text2}
+                            isRTL={props.isRTL}
+                        />
+                    )
+                }}
+            />
         </PaperProvider>
     );
 };
